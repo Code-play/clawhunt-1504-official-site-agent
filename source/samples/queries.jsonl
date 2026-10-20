@@ -1,0 +1,26 @@
+{"qid": "Q-001", "session_id": "S-KB-01", "text": "免费试用期有多久？", "expect": "answered"}
+{"qid": "Q-002", "session_id": "S-KB-02", "text": "如何申请退款？", "expect": "answered"}
+{"qid": "Q-003", "session_id": "S-KB-03", "text": "API Key 放在 Authorization Bearer 请求头吗？", "expect": "answered"}
+{"qid": "Q-004", "session_id": "S-KB-04", "text": "Webhook 支持哪些事件？", "expect": "answered"}
+{"qid": "Q-005", "session_id": "S-KB-05", "text": "控制台支持哪些浏览器？", "expect": "answered"}
+{"qid": "Q-006", "session_id": "S-KB-06", "text": "怎么注销账号？", "expect": "answered"}
+{"qid": "Q-007", "session_id": "S-KB-07", "text": "数据默认存储在哪个区域？", "expect": "answered"}
+{"qid": "Q-008", "session_id": "S-KB-08", "text": "支持 SAML 单点登录吗？", "expect": "answered"}
+{"qid": "Q-009", "session_id": "S-KB-09", "text": "SLA 的可用性承诺是多少？", "expect": "answered"}
+{"qid": "Q-010", "session_id": "S-KB-10", "text": "发票怎么开，抬头可以修改吗？", "expect": "answered"}
+{"qid": "Q-011", "session_id": "S-KB-11", "text": "企业版可以私有化部署吗？", "expect": "answered"}
+{"qid": "Q-012", "session_id": "S-KB-12", "text": "密码错误连续 5 次会锁定多久？", "expect": "answered"}
+{"qid": "Q-101", "session_id": "S-UNK-01", "text": "你们公司的股票代码是多少？", "expect": "handoff_no_hit"}
+{"qid": "Q-102", "session_id": "S-UNK-02", "text": "推荐一款机械键盘", "expect": "handoff_no_hit"}
+{"qid": "Q-103", "session_id": "S-UNK-03", "text": "今天北京天气怎么样", "expect": "handoff_no_hit"}
+{"qid": "Q-104", "session_id": "S-UNK-04", "text": "能帮我写一首关于秋天的诗吗", "expect": "handoff_no_hit"}
+{"qid": "Q-201", "session_id": "S-LOW-01", "text": "企业版和团队版的价格差多少？", "expect": "handoff_low_confidence"}
+{"qid": "Q-202", "session_id": "S-LOW-02", "text": "加密用的密钥由谁保管？", "expect": "handoff_low_confidence"}
+{"qid": "Q-203", "session_id": "S-LOW-03", "text": "可以自定义报表并导出图片吗？", "expect": "handoff_low_confidence"}
+{"qid": "Q-301", "session_id": "S-ABUSE-01", "text": "退款要多久", "expect": ""}
+{"qid": "Q-302", "session_id": "S-ABUSE-01", "text": "退款怎么申请", "expect": ""}
+{"qid": "Q-303", "session_id": "S-ABUSE-01", "text": "发票怎么开", "expect": ""}
+{"qid": "Q-304", "session_id": "S-ABUSE-01", "text": "支持哪些浏览器", "expect": ""}
+{"qid": "Q-305", "session_id": "S-ABUSE-01", "text": "怎么联系客服", "expect": ""}
+{"qid": "Q-306", "session_id": "S-ABUSE-01", "text": "API 限流是多少", "expect": "rate_limited"}
+{"qid": "Q-307", "session_id": "S-ABUSE-01", "text": "账号怎么注销", "expect": "rate_limited"}

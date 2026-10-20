@@ -1,0 +1,500 @@
+# 官网咨询 Agent · 一键复跑演示
+配置目录: D:\works\clawhunt-agent\deliverables\1504-official-site-agent\config
+知识条目: D:\works\clawhunt-agent\deliverables\1504-official-site-agent\samples\kb_pages.jsonl（合成/脱敏，共 25 条）
+查询输入: D:\works\clawhunt-agent\deliverables\1504-official-site-agent\samples\queries.jsonl（26 条）
+授权知识子集: 22/25 条进入索引；排除 3 条
+门控阈值: min_relevance=0.12，answer_confidence=0.32，min_margin=0.0
+限流: enabled=True，window=60s，max_requests=5
+
+==============================================================================
+1. 授权知识子集（检索只允许命中这里）
+==============================================================================
+
+page_id    title                        url
+------------------------------------------------------------------------------
+KB-001     套餐与计费概述                      https://help.aurora-cloud.example/docs/plans-overview
+KB-002     免费试用说明                       https://help.aurora-cloud.example/docs/free-trial
+KB-003     退款政策                         https://aurora-cloud.example/legal/refund-policy
+KB-004     API 鉴权方式                     https://help.aurora-cloud.example/docs/api-authentication
+KB-005     API 调用频率限制                   https://help.aurora-cloud.example/docs/api-rate-limits
+KB-006     Webhook 回调                   https://help.aurora-cloud.example/docs/webhooks
+KB-007     服务等级协议 SLA                   https://aurora-cloud.example/legal/sla
+KB-008     数据驻留区域                       https://help.aurora-cloud.example/docs/data-residency
+KB-009     数据导出                         https://help.aurora-cloud.example/docs/data-export
+KB-010     账号注销                         https://help.aurora-cloud.example/docs/account-deletion
+KB-011     SAML 单点登录                    https://help.aurora-cloud.example/docs/sso-saml
+KB-012     支持的浏览器                       https://help.aurora-cloud.example/docs/supported-browsers
+KB-013     新手引导                         https://help.aurora-cloud.example/docs/onboarding
+KB-014     服务状态页                        https://help.aurora-cloud.example/docs/status-page
+KB-015     加密与安全                        https://help.aurora-cloud.example/docs/security-encryption
+KB-016     合规与 DPA                      https://aurora-cloud.example/legal/gdpr-dpa
+KB-017     集成生态                         https://help.aurora-cloud.example/docs/integrations
+KB-018     移动端应用                        https://help.aurora-cloud.example/docs/mobile-app
+KB-019     发票开具                         https://help.aurora-cloud.example/docs/invoices
+KB-020     支持渠道                         https://help.aurora-cloud.example/docs/support-channels
+KB-021     企业版私有化部署                     https://help.aurora-cloud.example/docs/private-deployment
+KB-022     密码与登录安全                      https://help.aurora-cloud.example/docs/login-security
+
+被排除的条目（3 条，附原因）：
+  KB-090 内部定价毛利测算 -> 条目 authorized=false（资料未获授权对外）
+  KB-091 内部产品路线图 -> 条目 authorized=false（资料未获授权对外）
+  KB-092 合作方渠道返点草案 -> host partners.aurora-cloud.example 在 denied_hosts（合作方草稿区，未经法务审核）
+
+==============================================================================
+2. 逐条问询（检索 -> 门控 -> 生成/转人工）
+==============================================================================
+
+[Q-001] 免费试用期有多久？
+  会话: S-KB-01｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 5 条（授权子集内）
+    1. KB-002 score=0.4404 命中[用期,试用,费试,免费] 免费试用说明
+    2. KB-001 score=0.0523 命中[免费] 套餐与计费概述
+    3. KB-005 score=0.0379 命中[免费] API 调用频率限制
+  门控: confidence=0.4404 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.4404 >= answer_confidence 0.3200 → 允许生成（来源 KB-002）
+  输出答案: 根据《免费试用说明》：新注册用户可以免费试用企业版 14 天，试用期内包含全部功能与 100 万次 API 调用额度。试用到期后如未订阅，账号自动降级为免费版，数据保留 30 天。（来源：KB-002）
+  引用条目: KB-002
+
+[Q-002] 如何申请退款？
+  会话: S-KB-02｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 2 条（授权子集内）
+    1. KB-003 score=0.3633 命中[退款,申请] 退款政策
+    2. KB-019 score=0.0762 命中[申请] 发票开具
+  门控: confidence=0.3633 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.3633 >= answer_confidence 0.3200 → 允许生成（来源 KB-003）
+  输出答案: 根据《退款政策》：订阅后 7 天内且未使用付费额度超过 10% 的订单可以申请全额退款。超过 7 天按剩余服务天数比例退款。退款申请通过工单提交，审核周期为 3 到 5 个工作日，款项原路退回。（来源：KB-003）
+  引用条目: KB-003
+
+[Q-003] API Key 放在 Authorization Bearer 请求头吗？
+  会话: S-KB-03｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 5 条（授权子集内）
+    1. KB-004 score=0.3679 命中[authorization,bearer,求头,key,请求,api] API 鉴权方式
+    2. KB-005 score=0.1252 命中[key,请求,api] API 调用频率限制
+    3. KB-006 score=0.1136 命中[求头,请求,api] Webhook 回调
+  门控: confidence=0.3679 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.3679 >= answer_confidence 0.3200 → 允许生成（来源 KB-004）
+  输出答案: 根据《API 鉴权方式》：所有 API 请求必须携带 Authorization: Bearer 加 API Key 的请求头。API Key 在控制台的开发者设置中创建，支持按项目分配与随时轮换。（来源：KB-004）
+  引用条目: KB-004
+
+[Q-004] Webhook 支持哪些事件？
+  会话: S-KB-04｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 5 条（授权子集内）
+    1. KB-006 score=0.3287 命中[webhook,事件,支持] Webhook 回调
+    2. KB-012 score=0.0568 命中[支持] 支持的浏览器
+    3. KB-020 score=0.0540 命中[支持] 支持渠道
+  门控: confidence=0.3287 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.3287 >= answer_confidence 0.3200 → 允许生成（来源 KB-006）
+  输出答案: 根据《Webhook 回调》：Webhook 支持任务完成、任务失败、额度预警与成员变更四类事件。（来源：KB-006）
+  引用条目: KB-006
+
+[Q-005] 控制台支持哪些浏览器？
+  会话: S-KB-05｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 5 条（授权子集内）
+    1. KB-012 score=0.4384 命中[台支,浏览,览器,制台,控制,支持] 支持的浏览器
+    2. KB-018 score=0.0763 命中[制台,控制,支持] 移动端应用
+    3. KB-011 score=0.0667 命中[制台,控制,支持] SAML 单点登录
+  门控: confidence=0.4384 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.4384 >= answer_confidence 0.3200 → 允许生成（来源 KB-012）
+  输出答案: 根据《支持的浏览器》：官网与控制台支持 Chrome、Edge、Firefox 与 Safari 的最近两个大版本。IE 浏览器不再支持。移动端支持 iOS 15 及以上与 Android 10 及以上。（来源：KB-012）
+  引用条目: KB-012
+
+[Q-006] 怎么注销账号？
+  会话: S-KB-06｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 3 条（授权子集内）
+    1. KB-010 score=0.3537 命中[注销,账号] 账号注销
+    2. KB-022 score=0.0679 命中[账号] 密码与登录安全
+    3. KB-002 score=0.0675 命中[账号] 免费试用说明
+  门控: confidence=0.3537 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.3537 >= answer_confidence 0.3200 → 允许生成（来源 KB-010）
+  输出答案: 根据《账号注销》：账号所有者可在设置的安全页发起注销。注销前需先转让或删除所有项目，注销后 30 天内可联系客服恢复，超过 30 天数据将被永久删除且不可恢复。（来源：KB-010）
+  引用条目: KB-010
+
+[Q-007] 数据默认存储在哪个区域？
+  会话: S-KB-07｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 5 条（授权子集内）
+    1. KB-008 score=0.4019 命中[储在,区域,存储,据默,认存,默认] 数据驻留区域
+    2. KB-009 score=0.0411 命中[数据] 数据导出
+    3. KB-016 score=0.0340 命中[数据] 合规与 DPA
+  门控: confidence=0.4019 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.4019 >= answer_confidence 0.3200 → 允许生成（来源 KB-008）
+  输出答案: 根据《数据驻留区域》：数据默认存储在新加坡区域，企业版可选择新加坡、法兰克福或弗吉尼亚区域。数据驻留区域在创建租户时确定，之后迁移需提交工单并停机不超过 2 小时。（来源：KB-008）
+  引用条目: KB-008
+
+[Q-008] 支持 SAML 单点登录吗？
+  会话: S-KB-08｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 5 条（授权子集内）
+    1. KB-011 score=0.5026 命中[saml,单点,点登,登录,支持] SAML 单点登录
+    2. KB-022 score=0.1376 命中[登录,支持] 密码与登录安全
+    3. KB-012 score=0.0424 命中[支持] 支持的浏览器
+  门控: confidence=0.5026 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.5026 >= answer_confidence 0.3200 → 允许生成（来源 KB-011）
+  输出答案: 根据《SAML 单点登录》：企业版支持 SAML 2.0 单点登录，兼容 Okta、Azure AD 与 Google Workspace。（来源：KB-011）
+  引用条目: KB-011
+
+[Q-009] SLA 的可用性承诺是多少？
+  会话: S-KB-09｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 1 条（授权子集内）
+    1. KB-007 score=0.4613 命中[sla,可用,承诺,用性] 服务等级协议 SLA
+  门控: confidence=0.4613 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.4613 >= answer_confidence 0.3200 → 允许生成（来源 KB-007）
+  输出答案: 根据《服务等级协议 SLA》：企业版承诺月度可用性不低于 99.95%，团队版 99.9%，免费版不提供 SLA。可用性按自然月统计，低于承诺时按合同发放服务抵扣券，最高抵扣当月费用的 30%。（来源：KB-007）
+  引用条目: KB-007
+
+[Q-010] 发票怎么开，抬头可以修改吗？
+  会话: S-KB-10｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 5 条（授权子集内）
+    1. KB-019 score=0.3227 命中[发票,抬头,修改] 发票开具
+    2. KB-018 score=0.0617 命中[修改] 移动端应用
+    3. KB-009 score=0.0478 命中[可以] 数据导出
+  门控: confidence=0.3227 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.3227 >= answer_confidence 0.3200 → 允许生成（来源 KB-019）
+  输出答案: 根据《发票开具》：付费用户可在计费中心的发票页申请增值税普通发票或专用发票。发票抬头与税号在提交后不可修改，开票周期为 5 个工作日，电子发票发送至账单邮箱。（来源：KB-019）
+  引用条目: KB-019
+
+[Q-011] 企业版可以私有化部署吗？
+  会话: S-KB-11｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 5 条（授权子集内）
+    1. KB-021 score=0.3958 命中[化部,有化,私有,部署,业版,企业] 企业版私有化部署
+    2. KB-001 score=0.2215 命中[化部,有化,私有,部署,业版,企业] 套餐与计费概述
+    3. KB-005 score=0.0889 命中[版可,业版,企业] API 调用频率限制
+  门控: confidence=0.3958 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.3958 >= answer_confidence 0.3200 → 允许生成（来源 KB-021）
+  输出答案: 根据《企业版私有化部署》：企业版支持私有化部署，可运行在客户自有的 Kubernetes 集群。部署包包含控制台、API 网关与检索服务，最低配置为 3 节点 16 核 64GB。（来源：KB-021）
+  引用条目: KB-021
+
+[Q-012] 密码错误连续 5 次会锁定多久？
+  会话: S-KB-12｜期望分支: 命中作答（answered）
+  实际分支: 命中作答（answered）
+  检索候选: 1 条（授权子集内）
+    1. KB-022 score=0.3715 命中[密码,码错,连续,锁定,错误] 密码与登录安全
+  门控: confidence=0.3715 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.3715 >= answer_confidence 0.3200 → 允许生成（来源 KB-022）
+  输出答案: 根据《密码与登录安全》：账号支持密码登录与邮箱验证码登录。连续 5 次密码错误将锁定 30 分钟。（来源：KB-022）
+  引用条目: KB-022
+
+[Q-101] 你们公司的股票代码是多少？
+  会话: S-UNK-01｜期望分支: 未命中转人工（handoff_no_hit）
+  实际分支: 未命中转人工（handoff_no_hit）
+  检索候选: 0 条（授权子集内）
+    （无候选）
+  门控: confidence=0.0000 answer_threshold=0.32 allowed=False
+  门控理由: 最高检索分 0.0000 < min_relevance 0.1200（候选 0 条）→ 判定为未知问题，转人工
+  输出工单: HT-0001 -> 队列 human-l1（SLA 4h）
+  上下文包: 问题/候选0条/置信度/会话 S-UNK-01
+
+[Q-102] 推荐一款机械键盘
+  会话: S-UNK-02｜期望分支: 未命中转人工（handoff_no_hit）
+  实际分支: 未命中转人工（handoff_no_hit）
+  检索候选: 0 条（授权子集内）
+    （无候选）
+  门控: confidence=0.0000 answer_threshold=0.32 allowed=False
+  门控理由: 最高检索分 0.0000 < min_relevance 0.1200（候选 0 条）→ 判定为未知问题，转人工
+  输出工单: HT-0002 -> 队列 human-l1（SLA 4h）
+  上下文包: 问题/候选0条/置信度/会话 S-UNK-02
+
+[Q-103] 今天北京天气怎么样
+  会话: S-UNK-03｜期望分支: 未命中转人工（handoff_no_hit）
+  实际分支: 未命中转人工（handoff_no_hit）
+  检索候选: 0 条（授权子集内）
+    （无候选）
+  门控: confidence=0.0000 answer_threshold=0.32 allowed=False
+  门控理由: 最高检索分 0.0000 < min_relevance 0.1200（候选 0 条）→ 判定为未知问题，转人工
+  输出工单: HT-0003 -> 队列 human-l1（SLA 4h）
+  上下文包: 问题/候选0条/置信度/会话 S-UNK-03
+
+[Q-104] 能帮我写一首关于秋天的诗吗
+  会话: S-UNK-04｜期望分支: 未命中转人工（handoff_no_hit）
+  实际分支: 未命中转人工（handoff_no_hit）
+  检索候选: 0 条（授权子集内）
+    （无候选）
+  门控: confidence=0.0000 answer_threshold=0.32 allowed=False
+  门控理由: 最高检索分 0.0000 < min_relevance 0.1200（候选 0 条）→ 判定为未知问题，转人工
+  输出工单: HT-0004 -> 队列 human-l1（SLA 4h）
+  上下文包: 问题/候选0条/置信度/会话 S-UNK-04
+
+[Q-201] 企业版和团队版的价格差多少？
+  会话: S-LOW-01｜期望分支: 低置信度转人工（handoff_low_confidence）
+  实际分支: 低置信度转人工（handoff_low_confidence）
+  检索候选: 5 条（授权子集内）
+    1. KB-001 score=0.2667 命中[团队,队版,业版,企业] 套餐与计费概述
+    2. KB-005 score=0.1932 命中[团队,队版,业版,企业] API 调用频率限制
+    3. KB-020 score=0.1868 命中[团队,队版,业版,企业] 支持渠道
+  门控: confidence=0.2667 answer_threshold=0.32 allowed=False
+  门控理由: min_relevance 0.1200 <= 最高检索分 0.2667 < answer_confidence 0.3200 → 证据不足，转人工
+  输出工单: HT-0005 -> 队列 human-l2-specialist（SLA 2h）
+  上下文包: 问题/候选5条/置信度/会话 S-LOW-01
+
+[Q-202] 加密用的密钥由谁保管？
+  会话: S-LOW-02｜期望分支: 低置信度转人工（handoff_low_confidence）
+  实际分支: 低置信度转人工（handoff_low_confidence）
+  检索候选: 4 条（授权子集内）
+    1. KB-015 score=0.2473 命中[加密,密钥] 加密与安全
+    2. KB-007 score=0.0791 命中[用的] 服务等级协议 SLA
+    3. KB-004 score=0.0552 命中[密钥] API 鉴权方式
+  门控: confidence=0.2473 answer_threshold=0.32 allowed=False
+  门控理由: min_relevance 0.1200 <= 最高检索分 0.2473 < answer_confidence 0.3200 → 证据不足，转人工
+  输出工单: HT-0006 -> 队列 human-l2-specialist（SLA 2h）
+  上下文包: 问题/候选4条/置信度/会话 S-LOW-02
+
+[Q-203] 可以自定义报表并导出图片吗？
+  会话: S-LOW-03｜期望分支: 低置信度转人工（handoff_low_confidence）
+  实际分支: 低置信度转人工（handoff_low_confidence）
+  检索候选: 3 条（授权子集内）
+    1. KB-009 score=0.2959 命中[导出,可以] 数据导出
+    2. KB-002 score=0.0675 命中[可以] 免费试用说明
+    3. KB-003 score=0.0652 命中[可以] 退款政策
+  门控: confidence=0.2959 answer_threshold=0.32 allowed=False
+  门控理由: min_relevance 0.1200 <= 最高检索分 0.2959 < answer_confidence 0.3200 → 证据不足，转人工
+  输出工单: HT-0007 -> 队列 human-l2-specialist（SLA 2h）
+  上下文包: 问题/候选3条/置信度/会话 S-LOW-03
+
+[Q-301] 退款要多久
+  会话: S-ABUSE-01｜期望分支: -
+  实际分支: 低置信度转人工（handoff_low_confidence）
+  检索候选: 1 条（授权子集内）
+    1. KB-003 score=0.3121 命中[退款] 退款政策
+  门控: confidence=0.3121 answer_threshold=0.32 allowed=False
+  门控理由: min_relevance 0.1200 <= 最高检索分 0.3121 < answer_confidence 0.3200 → 证据不足，转人工
+  输出工单: HT-0008 -> 队列 human-l2-specialist（SLA 2h）
+  上下文包: 问题/候选1条/置信度/会话 S-ABUSE-01
+
+[Q-302] 退款怎么申请
+  会话: S-ABUSE-01｜期望分支: -
+  实际分支: 命中作答（answered）
+  检索候选: 2 条（授权子集内）
+    1. KB-003 score=0.3633 命中[退款,申请] 退款政策
+    2. KB-019 score=0.0762 命中[申请] 发票开具
+  门控: confidence=0.3633 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.3633 >= answer_confidence 0.3200 → 允许生成（来源 KB-003）
+  输出答案: 根据《退款政策》：订阅后 7 天内且未使用付费额度超过 10% 的订单可以申请全额退款。超过 7 天按剩余服务天数比例退款。退款申请通过工单提交，审核周期为 3 到 5 个工作日，款项原路退回。（来源：KB-003）
+  引用条目: KB-003
+
+[Q-303] 发票怎么开
+  会话: S-ABUSE-01｜期望分支: -
+  实际分支: 命中作答（answered）
+  检索候选: 1 条（授权子集内）
+    1. KB-019 score=0.3644 命中[发票] 发票开具
+  门控: confidence=0.3644 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.3644 >= answer_confidence 0.3200 → 允许生成（来源 KB-019）
+  输出答案: 根据《发票开具》：付费用户可在计费中心的发票页申请增值税普通发票或专用发票。发票抬头与税号在提交后不可修改，开票周期为 5 个工作日，电子发票发送至账单邮箱。（来源：KB-019）
+  引用条目: KB-019
+
+[Q-304] 支持哪些浏览器
+  会话: S-ABUSE-01｜期望分支: -
+  实际分支: 命中作答（answered）
+  检索候选: 5 条（授权子集内）
+    1. KB-012 score=0.4077 命中[浏览,览器,支持] 支持的浏览器
+    2. KB-020 score=0.0540 命中[支持] 支持渠道
+    3. KB-018 score=0.0382 命中[支持] 移动端应用
+  门控: confidence=0.4077 answer_threshold=0.32 allowed=True
+  门控理由: 最高检索分 0.4077 >= answer_confidence 0.3200 → 允许生成（来源 KB-012）
+  输出答案: 根据《支持的浏览器》：官网与控制台支持 Chrome、Edge、Firefox 与 Safari 的最近两个大版本。IE 浏览器不再支持。移动端支持 iOS 15 及以上与 Android 10 及以上。（来源：KB-012）
+  引用条目: KB-012
+
+[Q-305] 怎么联系客服
+  会话: S-ABUSE-01｜期望分支: -
+  实际分支: 低置信度转人工（handoff_low_confidence）
+  检索候选: 1 条（授权子集内）
+    1. KB-010 score=0.2262 命中[客服,系客,联系] 账号注销
+  门控: confidence=0.2262 answer_threshold=0.32 allowed=False
+  门控理由: min_relevance 0.1200 <= 最高检索分 0.2262 < answer_confidence 0.3200 → 证据不足，转人工
+  输出工单: HT-0009 -> 队列 human-l2-specialist（SLA 2h）
+  上下文包: 问题/候选1条/置信度/会话 S-ABUSE-01
+
+[Q-306] API 限流是多少
+  会话: S-ABUSE-01｜期望分支: 限流拒绝（rate_limited）
+  实际分支: 限流拒绝（rate_limited）
+  检索候选: 0 条（授权子集内）
+    （无候选）
+  门控: confidence=0.0000 answer_threshold=0.32 allowed=False
+  门控理由: 触发限流，未执行检索与生成：最近 60s 已请求 5 次，达到上限 5，需等待 60s
+  输出工单: HT-0010 -> 队列 security-abuse（SLA 1h）
+  上下文包: 问题/候选0条/置信度/会话 S-ABUSE-01
+
+[Q-307] 账号怎么注销
+  会话: S-ABUSE-01｜期望分支: 限流拒绝（rate_limited）
+  实际分支: 限流拒绝（rate_limited）
+  检索候选: 0 条（授权子集内）
+    （无候选）
+  门控: confidence=0.0000 answer_threshold=0.32 allowed=False
+  门控理由: 触发限流，未执行检索与生成：最近 60s 已请求 5 次，达到上限 5，需等待 60s
+  输出工单: HT-0011 -> 队列 security-abuse（SLA 1h）
+  上下文包: 问题/候选0条/置信度/会话 S-ABUSE-01
+
+==============================================================================
+3. 三分支「输入 -> 输出」对照（验收标准）
+==============================================================================
+
+场景: 已知问题
+  输入: 免费试用期有多久？
+  输出分支: answered
+  输出答案: 根据《免费试用说明》：新注册用户可以免费试用企业版 14 天，试用期内包含全部功能与 100 万次 API 调用额度。试用到期后如未订阅，账号自动降级为免费版，数据保留 30 天。（来源：KB-002）
+  来源条目 id: KB-002
+
+场景: 未知问题
+  输入: 你们公司的股票代码是多少？
+  输出分支: handoff_no_hit
+  输出工单: HT-0001
+  转人工队列: human-l1｜SLA 4h
+  置信度: 0.0000（阈值 0.32）
+  上下文包检索候选: 0 条
+
+场景: 低置信度问题
+  输入: 企业版和团队版的价格差多少？
+  输出分支: handoff_low_confidence
+  输出工单: HT-0005
+  转人工队列: human-l2-specialist｜SLA 2h
+  置信度: 0.2667（阈值 0.32）
+  上下文包检索候选: 5 条
+
+==============================================================================
+4. 限流与防滥用（可配置滑动窗口）
+==============================================================================
+
+限流配置: {"enabled": true, "window_seconds": 60, "max_requests": 5, "abuse_queue": "security-abuse", "abuse_sla_hours": 1, "note": "滑动窗口：每个会话在 window_seconds 内最多 max_requests 次；超限转 abuse_queue"}
+本轮触发限流: 2 次
+  [Q-306] key=S-ABUSE-01 used=5/5 retry_after=60s -> 工单 HT-0010
+  [Q-307] key=S-ABUSE-01 used=5/5 retry_after=60s -> 工单 HT-0011
+
+==============================================================================
+5. 执行轨迹（完整一次）
+==============================================================================
+
+| seq | step               | at                   | query | what                                             |
+|-----|--------------------|----------------------|-------|--------------------------------------------------|
+| 1   | ratelimit          | 2026-01-05T09:00:00Z | Q-001 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 2   | retrieval          | 2026-01-05T09:00:30Z | Q-001 | 检索命中 5 条，top=0.440363                            |
+| 3   | gate               | 2026-01-05T09:00:30Z | Q-001 | 门控 answered（置信度 0.440363，放行=True）                |
+| 4   | generation         | 2026-01-05T09:00:30Z | Q-001 | 生成答案，引用 ['KB-002']                               |
+| 5   | ratelimit          | 2026-01-05T09:01:00Z | Q-002 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 6   | retrieval          | 2026-01-05T09:01:30Z | Q-002 | 检索命中 2 条，top=0.363269                            |
+| 7   | gate               | 2026-01-05T09:01:30Z | Q-002 | 门控 answered（置信度 0.363269，放行=True）                |
+| 8   | generation         | 2026-01-05T09:01:30Z | Q-002 | 生成答案，引用 ['KB-003']                               |
+| 9   | ratelimit          | 2026-01-05T09:02:00Z | Q-003 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 10  | retrieval          | 2026-01-05T09:02:30Z | Q-003 | 检索命中 5 条，top=0.367866                            |
+| 11  | gate               | 2026-01-05T09:02:30Z | Q-003 | 门控 answered（置信度 0.367866，放行=True）                |
+| 12  | generation         | 2026-01-05T09:02:30Z | Q-003 | 生成答案，引用 ['KB-004']                               |
+| 13  | ratelimit          | 2026-01-05T09:03:00Z | Q-004 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 14  | retrieval          | 2026-01-05T09:03:30Z | Q-004 | 检索命中 5 条，top=0.328695                            |
+| 15  | gate               | 2026-01-05T09:03:30Z | Q-004 | 门控 answered（置信度 0.328695，放行=True）                |
+| 16  | generation         | 2026-01-05T09:03:30Z | Q-004 | 生成答案，引用 ['KB-006']                               |
+| 17  | ratelimit          | 2026-01-05T09:04:00Z | Q-005 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 18  | retrieval          | 2026-01-05T09:04:30Z | Q-005 | 检索命中 5 条，top=0.438358                            |
+| 19  | gate               | 2026-01-05T09:04:30Z | Q-005 | 门控 answered（置信度 0.438358，放行=True）                |
+| 20  | generation         | 2026-01-05T09:04:30Z | Q-005 | 生成答案，引用 ['KB-012']                               |
+| 21  | ratelimit          | 2026-01-05T09:05:00Z | Q-006 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 22  | retrieval          | 2026-01-05T09:05:30Z | Q-006 | 检索命中 3 条，top=0.353714                            |
+| 23  | gate               | 2026-01-05T09:05:30Z | Q-006 | 门控 answered（置信度 0.353714，放行=True）                |
+| 24  | generation         | 2026-01-05T09:05:30Z | Q-006 | 生成答案，引用 ['KB-010']                               |
+| 25  | ratelimit          | 2026-01-05T09:06:00Z | Q-007 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 26  | retrieval          | 2026-01-05T09:06:30Z | Q-007 | 检索命中 5 条，top=0.401924                            |
+| 27  | gate               | 2026-01-05T09:06:30Z | Q-007 | 门控 answered（置信度 0.401924，放行=True）                |
+| 28  | generation         | 2026-01-05T09:06:30Z | Q-007 | 生成答案，引用 ['KB-008']                               |
+| 29  | ratelimit          | 2026-01-05T09:07:00Z | Q-008 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 30  | retrieval          | 2026-01-05T09:07:30Z | Q-008 | 检索命中 5 条，top=0.502584                            |
+| 31  | gate               | 2026-01-05T09:07:30Z | Q-008 | 门控 answered（置信度 0.502584，放行=True）                |
+| 32  | generation         | 2026-01-05T09:07:30Z | Q-008 | 生成答案，引用 ['KB-011']                               |
+| 33  | ratelimit          | 2026-01-05T09:08:00Z | Q-009 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 34  | retrieval          | 2026-01-05T09:08:30Z | Q-009 | 检索命中 1 条，top=0.461286                            |
+| 35  | gate               | 2026-01-05T09:08:30Z | Q-009 | 门控 answered（置信度 0.461286，放行=True）                |
+| 36  | generation         | 2026-01-05T09:08:30Z | Q-009 | 生成答案，引用 ['KB-007']                               |
+| 37  | ratelimit          | 2026-01-05T09:09:00Z | Q-010 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 38  | retrieval          | 2026-01-05T09:09:30Z | Q-010 | 检索命中 5 条，top=0.322715                            |
+| 39  | gate               | 2026-01-05T09:09:30Z | Q-010 | 门控 answered（置信度 0.322715，放行=True）                |
+| 40  | generation         | 2026-01-05T09:09:30Z | Q-010 | 生成答案，引用 ['KB-019']                               |
+| 41  | ratelimit          | 2026-01-05T09:10:00Z | Q-011 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 42  | retrieval          | 2026-01-05T09:10:30Z | Q-011 | 检索命中 5 条，top=0.39579                             |
+| 43  | gate               | 2026-01-05T09:10:30Z | Q-011 | 门控 answered（置信度 0.39579，放行=True）                 |
+| 44  | generation         | 2026-01-05T09:10:30Z | Q-011 | 生成答案，引用 ['KB-021']                               |
+| 45  | ratelimit          | 2026-01-05T09:11:00Z | Q-012 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 46  | retrieval          | 2026-01-05T09:11:30Z | Q-012 | 检索命中 1 条，top=0.371533                            |
+| 47  | gate               | 2026-01-05T09:11:30Z | Q-012 | 门控 answered（置信度 0.371533，放行=True）                |
+| 48  | generation         | 2026-01-05T09:11:30Z | Q-012 | 生成答案，引用 ['KB-022']                               |
+| 49  | ratelimit          | 2026-01-05T09:12:00Z | Q-101 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 50  | retrieval          | 2026-01-05T09:12:30Z | Q-101 | 检索命中 0 条，top=0.0                                 |
+| 51  | gate               | 2026-01-05T09:12:30Z | Q-101 | 门控 handoff_no_hit（置信度 0.0，放行=False）              |
+| 52  | handoff            | 2026-01-05T09:12:30Z | Q-101 | 转人工 HT-0001 -> human-l1                          |
+| 53  | generation_skipped | 2026-01-05T09:12:30Z | Q-101 |                                                  |
+| 54  | ratelimit          | 2026-01-05T09:13:00Z | Q-102 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 55  | retrieval          | 2026-01-05T09:13:30Z | Q-102 | 检索命中 0 条，top=0.0                                 |
+| 56  | gate               | 2026-01-05T09:13:30Z | Q-102 | 门控 handoff_no_hit（置信度 0.0，放行=False）              |
+| 57  | handoff            | 2026-01-05T09:13:30Z | Q-102 | 转人工 HT-0002 -> human-l1                          |
+| 58  | generation_skipped | 2026-01-05T09:13:30Z | Q-102 |                                                  |
+| 59  | ratelimit          | 2026-01-05T09:14:00Z | Q-103 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 60  | retrieval          | 2026-01-05T09:14:30Z | Q-103 | 检索命中 0 条，top=0.0                                 |
+| 61  | gate               | 2026-01-05T09:14:30Z | Q-103 | 门控 handoff_no_hit（置信度 0.0，放行=False）              |
+| 62  | handoff            | 2026-01-05T09:14:30Z | Q-103 | 转人工 HT-0003 -> human-l1                          |
+| 63  | generation_skipped | 2026-01-05T09:14:30Z | Q-103 |                                                  |
+| 64  | ratelimit          | 2026-01-05T09:15:00Z | Q-104 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 65  | retrieval          | 2026-01-05T09:15:30Z | Q-104 | 检索命中 0 条，top=0.0                                 |
+| 66  | gate               | 2026-01-05T09:15:30Z | Q-104 | 门控 handoff_no_hit（置信度 0.0，放行=False）              |
+| 67  | handoff            | 2026-01-05T09:15:30Z | Q-104 | 转人工 HT-0004 -> human-l1                          |
+| 68  | generation_skipped | 2026-01-05T09:15:30Z | Q-104 |                                                  |
+| 69  | ratelimit          | 2026-01-05T09:16:00Z | Q-201 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 70  | retrieval          | 2026-01-05T09:16:30Z | Q-201 | 检索命中 5 条，top=0.266653                            |
+| 71  | gate               | 2026-01-05T09:16:30Z | Q-201 | 门控 handoff_low_confidence（置信度 0.266653，放行=False） |
+| 72  | handoff            | 2026-01-05T09:16:30Z | Q-201 | 转人工 HT-0005 -> human-l2-specialist               |
+| 73  | generation_skipped | 2026-01-05T09:16:30Z | Q-201 |                                                  |
+| 74  | ratelimit          | 2026-01-05T09:17:00Z | Q-202 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 75  | retrieval          | 2026-01-05T09:17:30Z | Q-202 | 检索命中 4 条，top=0.247286                            |
+| 76  | gate               | 2026-01-05T09:17:30Z | Q-202 | 门控 handoff_low_confidence（置信度 0.247286，放行=False） |
+| 77  | handoff            | 2026-01-05T09:17:30Z | Q-202 | 转人工 HT-0006 -> human-l2-specialist               |
+| 78  | generation_skipped | 2026-01-05T09:17:30Z | Q-202 |                                                  |
+| 79  | ratelimit          | 2026-01-05T09:18:00Z | Q-203 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 80  | retrieval          | 2026-01-05T09:18:30Z | Q-203 | 检索命中 3 条，top=0.295876                            |
+| 81  | gate               | 2026-01-05T09:18:30Z | Q-203 | 门控 handoff_low_confidence（置信度 0.295876，放行=False） |
+| 82  | handoff            | 2026-01-05T09:18:30Z | Q-203 | 转人工 HT-0007 -> human-l2-specialist               |
+| 83  | generation_skipped | 2026-01-05T09:18:30Z | Q-203 |                                                  |
+| 84  | ratelimit          | 2026-01-05T09:19:00Z | Q-301 | 限流 放行: 窗口内第 1/5 次请求                              |
+| 85  | retrieval          | 2026-01-05T09:19:30Z | Q-301 | 检索命中 1 条，top=0.312087                            |
+| 86  | gate               | 2026-01-05T09:19:30Z | Q-301 | 门控 handoff_low_confidence（置信度 0.312087，放行=False） |
+| 87  | handoff            | 2026-01-05T09:19:30Z | Q-301 | 转人工 HT-0008 -> human-l2-specialist               |
+| 88  | generation_skipped | 2026-01-05T09:19:30Z | Q-301 |                                                  |
+| 89  | ratelimit          | 2026-01-05T09:20:00Z | Q-302 | 限流 放行: 窗口内第 2/5 次请求                              |
+| 90  | retrieval          | 2026-01-05T09:20:30Z | Q-302 | 检索命中 2 条，top=0.363269                            |
+| 91  | gate               | 2026-01-05T09:20:30Z | Q-302 | 门控 answered（置信度 0.363269，放行=True）                |
+| 92  | generation         | 2026-01-05T09:20:30Z | Q-302 | 生成答案，引用 ['KB-003']                               |
+| 93  | ratelimit          | 2026-01-05T09:21:00Z | Q-303 | 限流 放行: 窗口内第 3/5 次请求                              |
+| 94  | retrieval          | 2026-01-05T09:21:30Z | Q-303 | 检索命中 1 条，top=0.364369                            |
+| 95  | gate               | 2026-01-05T09:21:30Z | Q-303 | 门控 answered（置信度 0.364369，放行=True）                |
+| 96  | generation         | 2026-01-05T09:21:30Z | Q-303 | 生成答案，引用 ['KB-019']                               |
+| 97  | ratelimit          | 2026-01-05T09:22:00Z | Q-304 | 限流 放行: 窗口内第 4/5 次请求                              |
+| 98  | retrieval          | 2026-01-05T09:22:30Z | Q-304 | 检索命中 5 条，top=0.40772                             |
+| 99  | gate               | 2026-01-05T09:22:30Z | Q-304 | 门控 answered（置信度 0.40772，放行=True）                 |
+| 100 | generation         | 2026-01-05T09:22:30Z | Q-304 | 生成答案，引用 ['KB-012']                               |
+| 101 | ratelimit          | 2026-01-05T09:23:00Z | Q-305 | 限流 放行: 窗口内第 5/5 次请求                              |
+| 102 | retrieval          | 2026-01-05T09:23:30Z | Q-305 | 检索命中 1 条，top=0.226199                            |
+| 103 | gate               | 2026-01-05T09:23:30Z | Q-305 | 门控 handoff_low_confidence（置信度 0.226199，放行=False） |
+| 104 | handoff            | 2026-01-05T09:23:30Z | Q-305 | 转人工 HT-0009 -> human-l2-specialist               |
+| 105 | generation_skipped | 2026-01-05T09:23:30Z | Q-305 |                                                  |
+| 106 | ratelimit          | 2026-01-05T09:24:00Z | Q-306 | 限流 拒绝: 最近 60s 已请求 5 次，达到上限 5，需等待 60s             |
+| 107 | handoff            | 2026-01-05T09:24:00Z | Q-306 | 转人工 HT-0010 -> security-abuse                    |
+| 108 | retrieval_skipped  | 2026-01-05T09:24:00Z | Q-306 |                                                  |
+| 109 | ratelimit          | 2026-01-05T09:24:30Z | Q-307 | 限流 拒绝: 最近 60s 已请求 5 次，达到上限 5，需等待 60s             |
+| 110 | handoff            | 2026-01-05T09:24:30Z | Q-307 | 转人工 HT-0011 -> security-abuse                    |
+| 111 | retrieval_skipped  | 2026-01-05T09:24:30Z | Q-307 |                                                  |
+
+轨迹条目统计: {"ratelimit": 26, "retrieval": 24, "gate": 24, "generation": 15, "handoff": 11, "generation_skipped": 9, "retrieval_skipped": 2, "total": 111}
+
+==============================================================================
+6. 产物
+==============================================================================
+  D:\works\clawhunt-agent\deliverables\1504-official-site-agent\out\citations.jsonl         （引用结果：答案 + 来源条目 id）
+  D:\works\clawhunt-agent\deliverables\1504-official-site-agent\out\handoff_tickets.jsonl   （转人工工单记录 11 条）
+  D:\works\clawhunt-agent\deliverables\1504-official-site-agent\out\retrieval_trace.jsonl   （检索候选与门控结论）
+  D:\works\clawhunt-agent\deliverables\1504-official-site-agent\out\decisions.jsonl         （逐条结论一行一条）
+  D:\works\clawhunt-agent\deliverables\1504-official-site-agent\out\trace.jsonl             （完整执行轨迹 111 条）
+  D:\works\clawhunt-agent\deliverables\1504-official-site-agent\out\demo_run.log   （本文件，用于一键复跑比对）
+
+分支统计: {"answered": 15, "handoff_no_hit": 4, "handoff_low_confidence": 5, "rate_limited": 2}

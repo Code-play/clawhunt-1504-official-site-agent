@@ -1,0 +1,108 @@
+# 验证记录 · 官网咨询 Agent（订单 #1504）
+
+生成时间（UTC）：2026-10-20T04:01:59.998764+00:00
+复跑命令：`python verify/run_verification.py`
+
+## 0. 原始输出采集（demo 与单元测试）
+
+- demo 原始输出：verify/records/demo_run_raw.txt（500 行）
+- 单元测试原始输出：verify/records/test_runner_raw.txt
+
+## 1. 验收标准：已知问题 / 未知问题 / 转人工演示
+
+- 分支统计：answered=15，no_hit=4，low_confidence=5，rate_limited=2
+
+## 2. 关注点 1：置信度阈值在生成之前
+
+
+## 3. 关注点 2：只命中授权公开子集，答案带来源条目 id
+
+
+## 4. 关注点 3：三类分支行为明确
+
+
+## 5. 关注点 4：转人工上下文包与工单记录
+
+
+## 6. 关注点 5：限流与防滥用可配置
+
+
+## 7. 关注点 6：交付物清单逐项可对照
+
+
+## 8. 一键复跑确定性与轨迹完整性
+
+
+## 结论
+
+- 断言总数：64；通过：64；失败：0
+- 结果：**全部通过**
+
+| 断言 | 预期 | 实际 | 结果 |
+|---|---|---|---|
+| demo 运行退出码 | 0 | 0 | 通过 |
+| 单元测试全部通过 | N/N tests passed | 49/49 tests passed | 通过 |
+| 逐条结论数量 | >= 15 | 26 | 通过 |
+| 命中作答分支存在 | True | 15 | 通过 |
+| 未命中转人工分支存在 | True | 4 | 通过 |
+| 低置信度转人工分支存在 | True | 5 | 通过 |
+| 样本期望分支全部命中 | 0 个不符 | 0 | 通过 |
+| 已知问题示例：Q-001 命中作答 | answered | answered | 通过 |
+| 已知问题示例：引用 KB-002 | ['KB-002'] | ['KB-002'] | 通过 |
+| 未知问题示例：Q-101 转人工 | handoff_no_hit | handoff_no_hit | 通过 |
+| 未知问题示例：工单队列 human-l1 | human-l1 | human-l1 | 通过 |
+| 低置信度示例：Q-201 转人工 | handoff_low_confidence | handoff_low_confidence | 通过 |
+| 低置信度示例：工单队列 human-l2-specialist | human-l2-specialist | human-l2-specialist | 通过 |
+| 三分支对照段已写入演示日志 | True | True | 通过 |
+| 演示日志含已知问题场景 | True | True | 通过 |
+| 演示日志含未知问题场景 | True | True | 通过 |
+| 演示日志含低置信度场景 | True | True | 通过 |
+| 所有作答分支：gate 步骤早于 generation | True | True | 通过 |
+| 所有转人工分支：无 generation，仅有 generation_skipped | True | True | 通过 |
+| 代码级：未放行时生成入口抛 GenerationBlocked | GenerationBlocked | GenerationBlocked | 通过 |
+| 阈值关系 answer_confidence > min_relevance | True | 0.32 > 0.12 | 通过 |
+| 知识条目总数 | >= 20 | 25 | 通过 |
+| 授权子集规模 | 22 | 22 | 通过 |
+| 未授权条目被排除 | True | KB-090,KB-091,KB-092 | 通过 |
+| 检索候选全部落在授权子集 | 0 个越界 | 0 | 通过 |
+| 引用结果文件非空 | True | 15 | 通过 |
+| 每个作答都有来源引用 | 0 个缺失 | 0 | 通过 |
+| 引用均为授权条目且写入答案正文 | 0 个问题 | 0 | 通过 |
+| 内部/未授权条目从未被检索命中 | 0 次 | 0 | 通过 |
+| answered 行均带 citation_ids | True | True | 通过 |
+| answered 行均无工单 | True | True | 通过 |
+| handoff_no_hit 行均无引用、有工单 | True | True | 通过 |
+| handoff_low_confidence 行均无引用、有工单 | True | True | 通过 |
+| 每行只属于一个分支 | True | 4 | 通过 |
+| 工单数量与转人工分支数一致 | 11 | 11 | 通过 |
+| 工单含问题/会话/候选/置信度/路由 | confidence,question,retrieval_candidates,route,session_id,status,ticket_id | 全部具备 | 通过 |
+| 工单状态均为 open | True | ['open'] | 通过 |
+| 工单 ticket_id 唯一 | True | 11 | 通过 |
+| 每张工单都有队列与 SLA | True | 全部具备 | 通过 |
+| 工单保留问题原文 | True | 全部具备 | 通过 |
+| 工单置信度与门控结论一致 | True | 一致 | 通过 |
+| 工单携带检索候选与会话 id | True | 有 | 通过 |
+| 限流配置字段齐全 | abuse_queue,enabled,max_requests,window_seconds | abuse_queue,enabled,max_requests,window_seconds | 通过 |
+| 限流分支可被触发 | True | 2 | 通过 |
+| 限流分支转安全队列 | security-abuse | ['security-abuse'] | 通过 |
+| 改 max_requests 即改变放行行为 | [T,T,F] vs [T,T,T] | [True, True, False] vs [True, True, True] | 通过 |
+| 滑动窗口到期后恢复 | True/False/True | True/False/True | 通过 |
+| 必需交付文件齐全 | 25 个 | 缺 0 | 通过 |
+| 目录名与文件名全 ASCII | 0 个非 ASCII | 0 | 通过 |
+| 源码与文档无 emoji | 0 个 | 0 | 通过 |
+| 文本文件均为 UTF-8 无 BOM | 0 个 BOM | 0 | 通过 |
+| 零第三方依赖（仅标准库） | 0 个第三方 import | 0 | 通过 |
+| 知识条目数量 | >= 20 | 25 | 通过 |
+| 查询样本数量 | >= 15 | 26 | 通过 |
+| SOLUTION.md 含 REPO_LINK_HERE | True | True | 通过 |
+| SOLUTION.md 含 ZIP_LINK_HERE | True | True | 通过 |
+| SOLUTION.md 字符数在 8500-9500 | 8500-9500 | 9142 | 通过 |
+| README.md 非空 | > 0 | 6170 | 通过 |
+| DELIVERY.md 非空 | > 0 | 6808 | 通过 |
+| 第二次 demo 退出码 | 0 | 0 | 通过 |
+| 两次 demo 产物逐字节一致 | 4/4 相同 | trace.jsonl: 相同；demo_run.log: 相同；citations.jsonl: 相同；handoff_tickets.jsonl: 相同 | 通过 |
+| 轨迹 seq 连续 | 1..N | 1..111 | 通过 |
+| 轨迹时间戳单调不减 | True | 111 条 | 通过 |
+| 每条问询都有 ratelimit 步骤 | True | 26 | 通过 |
+
+64/64 assertions passed

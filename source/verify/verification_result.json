@@ -1,0 +1,394 @@
+{
+  "order": 1504,
+  "generated_at": "2026-10-20T04:02:00.508455+00:00",
+  "assertions_total": 64,
+  "assertions_passed": 64,
+  "assertions_failed": 0,
+  "all_passed": true,
+  "checks": [
+    {
+      "name": "demo 运行退出码",
+      "expected": "0",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "单元测试全部通过",
+      "expected": "N/N tests passed",
+      "actual": "49/49 tests passed",
+      "passed": true
+    },
+    {
+      "name": "逐条结论数量",
+      "expected": ">= 15",
+      "actual": "26",
+      "passed": true
+    },
+    {
+      "name": "命中作答分支存在",
+      "expected": "True",
+      "actual": "15",
+      "passed": true
+    },
+    {
+      "name": "未命中转人工分支存在",
+      "expected": "True",
+      "actual": "4",
+      "passed": true
+    },
+    {
+      "name": "低置信度转人工分支存在",
+      "expected": "True",
+      "actual": "5",
+      "passed": true
+    },
+    {
+      "name": "样本期望分支全部命中",
+      "expected": "0 个不符",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "已知问题示例：Q-001 命中作答",
+      "expected": "answered",
+      "actual": "answered",
+      "passed": true
+    },
+    {
+      "name": "已知问题示例：引用 KB-002",
+      "expected": "['KB-002']",
+      "actual": "['KB-002']",
+      "passed": true
+    },
+    {
+      "name": "未知问题示例：Q-101 转人工",
+      "expected": "handoff_no_hit",
+      "actual": "handoff_no_hit",
+      "passed": true
+    },
+    {
+      "name": "未知问题示例：工单队列 human-l1",
+      "expected": "human-l1",
+      "actual": "human-l1",
+      "passed": true
+    },
+    {
+      "name": "低置信度示例：Q-201 转人工",
+      "expected": "handoff_low_confidence",
+      "actual": "handoff_low_confidence",
+      "passed": true
+    },
+    {
+      "name": "低置信度示例：工单队列 human-l2-specialist",
+      "expected": "human-l2-specialist",
+      "actual": "human-l2-specialist",
+      "passed": true
+    },
+    {
+      "name": "三分支对照段已写入演示日志",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "演示日志含已知问题场景",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "演示日志含未知问题场景",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "演示日志含低置信度场景",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "所有作答分支：gate 步骤早于 generation",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "所有转人工分支：无 generation，仅有 generation_skipped",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "代码级：未放行时生成入口抛 GenerationBlocked",
+      "expected": "GenerationBlocked",
+      "actual": "GenerationBlocked",
+      "passed": true
+    },
+    {
+      "name": "阈值关系 answer_confidence > min_relevance",
+      "expected": "True",
+      "actual": "0.32 > 0.12",
+      "passed": true
+    },
+    {
+      "name": "知识条目总数",
+      "expected": ">= 20",
+      "actual": "25",
+      "passed": true
+    },
+    {
+      "name": "授权子集规模",
+      "expected": "22",
+      "actual": "22",
+      "passed": true
+    },
+    {
+      "name": "未授权条目被排除",
+      "expected": "True",
+      "actual": "KB-090,KB-091,KB-092",
+      "passed": true
+    },
+    {
+      "name": "检索候选全部落在授权子集",
+      "expected": "0 个越界",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "引用结果文件非空",
+      "expected": "True",
+      "actual": "15",
+      "passed": true
+    },
+    {
+      "name": "每个作答都有来源引用",
+      "expected": "0 个缺失",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "引用均为授权条目且写入答案正文",
+      "expected": "0 个问题",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "内部/未授权条目从未被检索命中",
+      "expected": "0 次",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "answered 行均带 citation_ids",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "answered 行均无工单",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "handoff_no_hit 行均无引用、有工单",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "handoff_low_confidence 行均无引用、有工单",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "每行只属于一个分支",
+      "expected": "True",
+      "actual": "4",
+      "passed": true
+    },
+    {
+      "name": "工单数量与转人工分支数一致",
+      "expected": "11",
+      "actual": "11",
+      "passed": true
+    },
+    {
+      "name": "工单含问题/会话/候选/置信度/路由",
+      "expected": "confidence,question,retrieval_candidates,route,session_id,status,ticket_id",
+      "actual": "全部具备",
+      "passed": true
+    },
+    {
+      "name": "工单状态均为 open",
+      "expected": "True",
+      "actual": "['open']",
+      "passed": true
+    },
+    {
+      "name": "工单 ticket_id 唯一",
+      "expected": "True",
+      "actual": "11",
+      "passed": true
+    },
+    {
+      "name": "每张工单都有队列与 SLA",
+      "expected": "True",
+      "actual": "全部具备",
+      "passed": true
+    },
+    {
+      "name": "工单保留问题原文",
+      "expected": "True",
+      "actual": "全部具备",
+      "passed": true
+    },
+    {
+      "name": "工单置信度与门控结论一致",
+      "expected": "True",
+      "actual": "一致",
+      "passed": true
+    },
+    {
+      "name": "工单携带检索候选与会话 id",
+      "expected": "True",
+      "actual": "有",
+      "passed": true
+    },
+    {
+      "name": "限流配置字段齐全",
+      "expected": "abuse_queue,enabled,max_requests,window_seconds",
+      "actual": "abuse_queue,enabled,max_requests,window_seconds",
+      "passed": true
+    },
+    {
+      "name": "限流分支可被触发",
+      "expected": "True",
+      "actual": "2",
+      "passed": true
+    },
+    {
+      "name": "限流分支转安全队列",
+      "expected": "security-abuse",
+      "actual": "['security-abuse']",
+      "passed": true
+    },
+    {
+      "name": "改 max_requests 即改变放行行为",
+      "expected": "[T,T,F] vs [T,T,T]",
+      "actual": "[True, True, False] vs [True, True, True]",
+      "passed": true
+    },
+    {
+      "name": "滑动窗口到期后恢复",
+      "expected": "True/False/True",
+      "actual": "True/False/True",
+      "passed": true
+    },
+    {
+      "name": "必需交付文件齐全",
+      "expected": "25 个",
+      "actual": "缺 0",
+      "passed": true
+    },
+    {
+      "name": "目录名与文件名全 ASCII",
+      "expected": "0 个非 ASCII",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "源码与文档无 emoji",
+      "expected": "0 个",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "文本文件均为 UTF-8 无 BOM",
+      "expected": "0 个 BOM",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "零第三方依赖（仅标准库）",
+      "expected": "0 个第三方 import",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "知识条目数量",
+      "expected": ">= 20",
+      "actual": "25",
+      "passed": true
+    },
+    {
+      "name": "查询样本数量",
+      "expected": ">= 15",
+      "actual": "26",
+      "passed": true
+    },
+    {
+      "name": "SOLUTION.md 含 REPO_LINK_HERE",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "SOLUTION.md 含 ZIP_LINK_HERE",
+      "expected": "True",
+      "actual": "True",
+      "passed": true
+    },
+    {
+      "name": "SOLUTION.md 字符数在 8500-9500",
+      "expected": "8500-9500",
+      "actual": "9142",
+      "passed": true
+    },
+    {
+      "name": "README.md 非空",
+      "expected": "> 0",
+      "actual": "6170",
+      "passed": true
+    },
+    {
+      "name": "DELIVERY.md 非空",
+      "expected": "> 0",
+      "actual": "6808",
+      "passed": true
+    },
+    {
+      "name": "第二次 demo 退出码",
+      "expected": "0",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "两次 demo 产物逐字节一致",
+      "expected": "4/4 相同",
+      "actual": "trace.jsonl: 相同；demo_run.log: 相同；citations.jsonl: 相同；handoff_tickets.jsonl: 相同",
+      "passed": true
+    },
+    {
+      "name": "轨迹 seq 连续",
+      "expected": "1..N",
+      "actual": "1..111",
+      "passed": true
+    },
+    {
+      "name": "轨迹时间戳单调不减",
+      "expected": "True",
+      "actual": "111 条",
+      "passed": true
+    },
+    {
+      "name": "每条问询都有 ratelimit 步骤",
+      "expected": "True",
+      "actual": "26",
+      "passed": true
+    }
+  ]
+}

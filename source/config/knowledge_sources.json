@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "note": "授权公开知识源白名单。检索只允许命中 allowed_hosts 且条目 authorized=true 的资料；denied_hosts 与未列出的主机一律排除。全部为合成/脱敏示例域名（example 顶级域），不含任何真实站点。",
+  "allowed_hosts": [
+    {
+      "host": "help.aurora-cloud.example",
+      "path_prefix": "/docs/",
+      "license": "public-site",
+      "authorized": true,
+      "added": "2026-01-02",
+      "note": "官网帮助中心公开文档"
+    },
+    {
+      "host": "aurora-cloud.example",
+      "path_prefix": "/legal/",
+      "license": "public-site",
+      "authorized": true,
+      "added": "2026-01-02",
+      "note": "官网法律与政策页"
+    }
+  ],
+  "denied_hosts": [
+    {
+      "host": "intranet.aurora-cloud.example",
+      "reason": "内部知识库，未授权对外引用"
+    },
+    {
+      "host": "wiki.internal.aurora-cloud.example",
+      "reason": "内部 wiki，含未公开路线图"
+    },
+    {
+      "host": "partners.aurora-cloud.example",
+      "reason": "合作方草稿区，未经法务审核"
+    }
+  ],
+  "rules": {
+    "require_authorized_flag": true,
+    "require_https": true
+  }
+}

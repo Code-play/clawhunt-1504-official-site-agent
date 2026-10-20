@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# 注意：out/ 下的 demo 产物故意纳入版本库（三分支演示日志 / 引用结果 / 工单 / 轨迹），
+# 因为验收标准明确要求演示与验证记录，评审不跑代码也应能直接查阅。
+# 这些产物是确定性的，`python -m official_site_agent demo` 可逐字节重建。
+# verify/records/ 下的原始输出同理，纳入版本库。
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "note": "检索与门控阈值，以及限流参数。门控阈值决定三分支走向，且判断发生在答案生成之前。所有数值均可在不改代码的前提下调整。",
+  "retrieval": {
+    "top_k": 5,
+    "min_term_len": 2,
+    "note": "top_k 为最多返回候选数；min_term_len 为英文词最小长度，中文按二元组切分"
+  },
+  "gate": {
+    "min_relevance": 0.12,
+    "answer_confidence": 0.32,
+    "min_margin": 0.0,
+    "require_citation": true,
+    "note": "top_score < min_relevance 视为未命中；介于两者之间视为低置信度；>= answer_confidence 才允许生成。min_margin=0 表示暂不启用歧义抑制。"
+  },
+  "rate_limit": {
+    "enabled": true,
+    "window_seconds": 60,
+    "max_requests": 5,
+    "abuse_queue": "security-abuse",
+    "abuse_sla_hours": 1,
+    "note": "滑动窗口：每个会话在 window_seconds 内最多 max_requests 次；超限转 abuse_queue"
+  }
+}
